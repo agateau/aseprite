@@ -34,9 +34,9 @@ namespace app {
 using namespace ui;
 using namespace app::skin;
 
-class Item : public ListItem {
+class DataRecoveryItem : public ListItem {
 public:
-  Item(crash::Session* session, crash::Session::Backup* backup)
+  DataRecoveryItem(crash::Session* session, crash::Session::Backup* backup)
     : ListItem(backup ? " > " + backup->description(): session->name())
     , m_session(session)
     , m_backup(backup)
@@ -46,8 +46,8 @@ public:
     addChild(&m_openButton);
     addChild(&m_deleteButton);
 
-    m_openButton.Click.connect(Bind(&Item::onOpen, this));
-    m_deleteButton.Click.connect(Bind(&Item::onDelete, this));
+    m_openButton.Click.connect(Bind(&DataRecoveryItem::onOpen, this));
+    m_deleteButton.Click.connect(Bind(&DataRecoveryItem::onDelete, this));
 
     setup_mini_look(&m_openButton);
     setup_mini_look(&m_deleteButton);
@@ -159,12 +159,12 @@ void DataRecoveryView::fillList()
     if (session->isEmpty())
       continue;
 
-    Item* item = new Item(session.get(), nullptr);
+    DataRecoveryItem* item = new DataRecoveryItem(session.get(), nullptr);
     item->Regenerate.connect(&DataRecoveryView::fillList, this);
     m_listBox.addChild(item);
 
     for (auto& backup : session->backups()) {
-      item = new Item(session.get(), backup);
+      item = new DataRecoveryItem(session.get(), backup);
       item->Regenerate.connect(&DataRecoveryView::fillList, this);
       m_listBox.addChild(item);
     }
